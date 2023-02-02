@@ -1,10 +1,18 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./pages/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    fontFamily: {
+      "sans": ["Ubuntu", "sans-serif"]
+    },
+    extend: {
+      colors: {
+        primary: {
+          300: "#0eaddc",
+          700: "#0b75b0",
+        },
+      },
+    },
   },
-  plugins: [],
 }
