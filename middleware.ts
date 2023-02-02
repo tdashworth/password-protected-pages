@@ -6,6 +6,7 @@ const passwordKey = "password"
 
 type AppConfig = {
   projects: ProjectConfig[]
+  allowedCountries?: string[]
 }
 
 type ProjectConfig = { 
@@ -26,6 +27,8 @@ export async function middleware(request: NextRequest) {
   const project = url.pathname.split("/")[1]
   const config = appConfig.projects.filter(x => x.slug == project).at(0)
   const cookiePassword = decodeURI(request.cookies.get(project)?.value ?? "")
+
+  if (isGeoBlocked(appConfig, request.geo?.country)) return GeoBlocked(url);
 
   if (config == null) return NotFound(url)
 
@@ -82,6 +85,11 @@ function Closed(url: URL) {
   return NextResponse.rewrite(url)
 }
 
+function GeoBlocked(url: URL) {
+  url.pathname = '/geoblocked'
+  return NextResponse.rewrite(url)
+}
+
 function ProjectIndex(url: URL) {
   url.pathname += '/index.html'
   return NextResponse.redirect(url)
@@ -93,6 +101,12 @@ async function hash(text: string) {
   const hashArray = Array.from(new Uint8Array(hashBuffer))
   const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
   return hashHex;
+}
+
+function isGeoBlocked(config: AppConfig, country?: string) {
+  if (config.allowedCountries === undefined) return false
+
+  return !config.allowedCountries.includes(country ?? "");
 }
 
 function isEarly(config: ProjectConfig) {

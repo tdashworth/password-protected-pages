@@ -16,5 +16,6 @@
             "live": true,
             "signInExpiryInDays": 1
         }
-    ]
+    ],
+    "allowedCountries": [ "", "GB" ]
 }
