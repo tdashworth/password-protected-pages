@@ -2,7 +2,13 @@
     "projects": [
         {
             "slug": "project-1",
-            "passwordHash": "8bf09f613bfcf840fdbbaec75a87bff66d180a691ec0a52bea7c42bf8de04013"
+            "passwordHash": "8bf09f613bfcf840fdbbaec75a87bff66d180a691ec0a52bea7c42bf8de04013",
+            "activateOn": "2023-04-02T17:00:00"
+        },
+        {
+            "slug": "project-2",
+            "passwordHash": "8bf09f613bfcf840fdbbaec75a87bff66d180a691ec0a52bea7c42bf8de04013",
+            "live": false
         },
         {
             "slug": "example",
