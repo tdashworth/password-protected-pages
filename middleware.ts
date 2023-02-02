@@ -19,7 +19,7 @@ type SiteConfig = {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|favicon.ico|global.css).*)'],
+  matcher: ['/((?!_next/static|favicon.ico|global.css|ubuntu-font.css).*)'],
 }
 
 export async function middleware(request: NextRequest) {
