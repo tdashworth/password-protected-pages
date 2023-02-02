@@ -1,0 +1,14 @@
+{
+    "projects": [
+        {
+            "slug": "project-1",
+            "passwordHash": "8bf09f613bfcf840fdbbaec75a87bff66d180a691ec0a52bea7c42bf8de04013"
+        },
+        {
+            "slug": "example",
+            "passwordHash": "c7a765219000add2a6e2031bccd84a64f7878fd8cb3ee58767523d1969c41693",
+            "live": true,
+            "signInExpiryInDays": 1
+        }
+    ]
+}
