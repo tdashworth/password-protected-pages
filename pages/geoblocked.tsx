@@ -9,7 +9,7 @@ export default function GeoBlocked() {
           </svg>
 
           <h1 className="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">Location blocked.</h1>
-          <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">This project is not accessable from your location. Please contact us if you believe this to be wrong.</p>
+          <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">This site is not accessable from your location. Please contact us if you believe this to be wrong.</p>
         </div>
       </div>
     </section>

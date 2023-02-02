@@ -5,11 +5,11 @@ const oneDayInSeconds = 60 * 60 * 24
 const passwordKey = "password"
 
 type AppConfig = {
-  projects: ProjectConfig[]
+  sites: SiteConfig[]
   allowedCountries?: string[]
 }
 
-type ProjectConfig = { 
+type SiteConfig = { 
   slug: string,
   passwordHash: string,
   live?: boolean,
@@ -24,9 +24,9 @@ export const config = {
 
 export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
-  const project = url.pathname.split("/")[1]
-  const config = appConfig.projects.filter(x => x.slug == project).at(0)
-  const cookiePassword = decodeURI(request.cookies.get(project)?.value ?? "")
+  const siteSlug = url.pathname.split("/")[1]
+  const config = appConfig.sites.filter(x => x.slug == siteSlug).at(0)
+  const cookiePassword = decodeURI(request.cookies.get(siteSlug)?.value ?? "")
 
   if (isGeoBlocked(appConfig, request.geo?.country)) return GeoBlocked(url);
 
@@ -38,12 +38,12 @@ export async function middleware(request: NextRequest) {
 
   if (config.passwordHash != cookiePassword) return await Login(url, config);
 
-  if (url.pathname == `/${project}`) return ProjectIndex(url);
+  if (url.pathname == `/${siteSlug}`) return SiteIndex(url);
 
   return NextResponse.next()
 }
 
-async function Login(url: URL, config: ProjectConfig) {
+async function Login(url: URL, config: SiteConfig) {
   const hasPassword = url.searchParams.has(passwordKey)
   const password = decodeURI(url.searchParams.get(passwordKey) ?? "").replaceAll("+", " ")
   const passwordHash = await hash(`${config.slug}:${password}`)
@@ -90,7 +90,7 @@ function GeoBlocked(url: URL) {
   return NextResponse.rewrite(url)
 }
 
-function ProjectIndex(url: URL) {
+function SiteIndex(url: URL) {
   url.pathname += '/index.html'
   return NextResponse.redirect(url)
 }
@@ -109,7 +109,7 @@ function isGeoBlocked(config: AppConfig, country?: string) {
   return !config.allowedCountries.includes(country ?? "");
 }
 
-function isEarly(config: ProjectConfig) {
+function isEarly(config: SiteConfig) {
   if (config.activateOn === undefined) return false
   
   const date = Date.parse(config.activateOn)
@@ -119,7 +119,7 @@ function isEarly(config: ProjectConfig) {
   return date > Date.now()
 }
 
-function isLate(config: ProjectConfig) {
+function isLate(config: SiteConfig) {
   if (config.deactivateOn === undefined) return false
 
   const date = Date.parse(config.deactivateOn)

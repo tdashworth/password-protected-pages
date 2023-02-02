@@ -11,7 +11,7 @@ export default function Early() {
           </svg>
           
           <h1 className="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">Under construction.</h1>
-          <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">This project is unavailable. Please contact us if you believe this to be wrong.</p>
+          <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">This site is unavailable. Please contact us if you believe this to be wrong.</p>
         </div>
       </div>
     </section>

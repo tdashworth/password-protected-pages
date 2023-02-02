@@ -1,17 +1,17 @@
-const project = process.argv.at(2);
+const site = process.argv.at(2);
 const password = process.argv.at(3);
 
-if (!project || !password) {
+if (!site || !password) {
   console.log(
     `Incorrect format. Please use: 
-    npm run hash-password "project-slug" "your secure password your"`
+    npm run hash-password "site-slug" "your secure password your"`
   );
   return;
 }
 
 const crypto = require("node:crypto").webcrypto;
 
-hash(`${project}:${password}`).then(console.log);
+hash(`${site}:${password}`).then(console.log);
 
 async function hash(text) {
   const msgUint8 = new TextEncoder().encode(text);

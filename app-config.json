@@ -1,5 +1,5 @@
 {
-    "projects": [
+    "sites": [
         {
             "slug": "project-1",
             "passwordHash": "8bf09f613bfcf840fdbbaec75a87bff66d180a691ec0a52bea7c42bf8de04013",
