@@ -13,7 +13,7 @@ type SiteConfig = {
   slug: string,
   passwordHash: string,
   live?: boolean,
-  signInExpriyInDays?: number,
+  signInExpiryInDays?: number,
   activateOn: string,
   deactivateOn: string,
 }
@@ -63,7 +63,7 @@ async function Login(url: URL, config: SiteConfig) {
   const response = NextResponse.redirect(url)
   response.cookies.set(config.slug, passwordHash, { 
     httpOnly: true, 
-    maxAge: (config.signInExpriyInDays ?? 1) * oneDayInSeconds, 
+    maxAge: (config.signInExpiryInDays ?? 1) * oneDayInSeconds, 
     sameSite: true, 
     secure: true,
   })
