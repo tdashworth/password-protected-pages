@@ -1,8 +1,8 @@
-# Password Protected Pages (on vercel)
+# Password Protected Pages (on Cloudflare Pages)
 
 ## Demo
 
-URL: https://password-protected-pages.vercel.app
+URL: https://password-protected-pages.vercel.app (to change)
 
 | Site Slug | Password    |
 | --------- | ----------- |
