@@ -102,7 +102,15 @@ function getCookie(request: Request, key: string): string | null {
 }
 
 function setCookie(response: Response, key: string, value: string, maxAge: number) {
-  response.headers.append("Set-Cookie", `${key}=${value}; path=/; Max-Age=${maxAge}; Secure; HttpOnly; SameSite=true`)
+  const newCookie = `${key}=${value}; path=/; Max-Age=${maxAge}; Secure; HttpOnly; SameSite=true`
+
+  const header = response.headers.get("Set-Cookie")
+  if (!header) {
+    response.headers.append("Set-Cookie", newCookie)
+  } else {
+    response.headers.set("Set-Cookie", [header, newCookie].join("; "))
+  }
+
 }
 
 async function hash(text: string) {
