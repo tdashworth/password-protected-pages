@@ -27,8 +27,8 @@ type MiddlewareEnv = Env & {
 }
 
 export const onRequest: PagesFunction<Env> = async ({ request, next, env }) => {
+  const url = new URL(request.url);
   try {
-    const url = new URL(request.url);
     const siteSlug = url.pathname.split("/")[1]
     const config = appConfig.sites.filter(x => x.slug == siteSlug).at(0)
     const cookiePassword = decodeURI(getCookie(request, siteSlug) ?? "")
@@ -40,11 +40,10 @@ export const onRequest: PagesFunction<Env> = async ({ request, next, env }) => {
     if (config.live === false || isLate(config)) return Closed(env, url)
     
     if (config.passwordHash != cookiePassword) return await Login(env, url, config);
-    console.log("here")
 
     return next();
   } catch (err) {
-    return new Response(`${err.message}\n${err.stack}`, { status: 500 });
+    return ServerError(env, url, err)
   }
 }
 
@@ -62,7 +61,6 @@ async function Login(env: MiddlewareEnv, url: URL, config: SiteConfig) {
 
   if (config.passwordHash !== passwordHash) {
     url.searchParams.append("error", "Incorrect password.");
-    console.log(url)
     return Response.redirect(url.href)
   }
 
