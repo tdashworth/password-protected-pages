@@ -66,7 +66,7 @@ async function Login(env: MiddlewareEnv, url: URL, config: SiteConfig) {
     return Response.redirect(url.href)
   }
 
-  const response = Response.redirect(url.href)
+  const response = Response.redirect(url.href).clone()
   setCookie(response, config.slug, passwordHash, (config.signInExpiryInDays ?? 1) * oneDayInSeconds)
   return response
 }
