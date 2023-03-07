@@ -39,26 +39,30 @@ export const onRequest: PagesFunction<Env> = async ({ request, next, env }) => {
     
     if (config.live === false || isLate(config)) return Closed(env, url)
     
-    if (config.passwordHash != cookiePassword) return await Login(env, url, config);
+    if (config.passwordHash != cookiePassword) return await Login(env, request, config);
 
     return next();
   } catch (err) {
-    return ServerError(env, url, err)
+    return await ServerError(env, url, err)
   }
 }
 
-async function Login(env: MiddlewareEnv, url: URL, config: SiteConfig) {
-  const hasPassword = url.searchParams.has(passwordKey)
-  const password = decodeURI(url.searchParams.get(passwordKey) ?? "").replaceAll("+", " ")
-  const passwordHash = await hash(`${config.slug}:${password}`)
+async function Login(env: MiddlewareEnv, request: Request, config: SiteConfig) {
+  const url = new URL(request.url);
   
-  url.searchParams.delete(passwordKey)
-
-  if (!hasPassword) {
+  if (request.method !== "POST") {
     url.pathname = '/_internal/login'
     return env.ASSETS.fetch(url)
   }
+  
+  const password = decodeURI((await request.formData()).get(passwordKey) ?? "").replaceAll("+", " ")
+  const passwordHash = await hash(`${config.slug}:${password}`)
 
+  if (password === "") {
+    url.pathname = '/_internal/login'
+    return env.ASSETS.fetch(url)
+  }
+  
   if (config.passwordHash !== passwordHash) {
     url.searchParams.append("error", "Incorrect password.");
     return Response.redirect(url.href)
@@ -83,9 +87,10 @@ function Closed(env: MiddlewareEnv, url: URL) {
   return env.ASSETS.fetch(url)
 }
 
-function ServerError(env: MiddlewareEnv, url: URL, err: any) {
+async function ServerError(env: MiddlewareEnv, url: URL, err: any) {
   url.pathname = '/_internal/500'
-  return env.ASSETS.fetch(url)
+  const assetResponse = await env.ASSETS.fetch(url)
+  return new Response(assetResponse.body, { status: 500, headers: { error: err }})
 }
 
 function getCookie(request: Request, key: string): string | null {
