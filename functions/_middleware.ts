@@ -49,6 +49,7 @@ export const onRequest: PagesFunction<Env> = async ({ request, next, env }) => {
 
 async function Login(env: MiddlewareEnv, request: Request, config: SiteConfig) {
   const url = new URL(request.url);
+  url.searchParams.delete("error")
   
   if (request.method !== "POST") {
     url.pathname = '/_internal/login'
