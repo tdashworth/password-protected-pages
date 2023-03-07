@@ -66,9 +66,8 @@ async function Login(env: MiddlewareEnv, url: URL, config: SiteConfig) {
     return Response.redirect(url.href)
   }
 
-  const response = Response.redirect(url.href).clone()
-  setCookie(response, config.slug, passwordHash, (config.signInExpiryInDays ?? 1) * oneDayInSeconds)
-  return response
+  const newCookie = `${config.slug}=${passwordHash}; path=/; Max-Age=${(config.signInExpiryInDays ?? 1) * oneDayInSeconds}; Secure; HttpOnly; SameSite=true`
+  return new Response(null, { status: 302, headers: { location: url.href, "Set-Cookie": newCookie }})
 }
 
 function NotFound(env: MiddlewareEnv, url: URL) {
@@ -86,7 +85,7 @@ function Closed(env: MiddlewareEnv, url: URL) {
   return env.ASSETS.fetch(url)
 }
 
-function ServerError(env: MiddlewareEnv, url: URL) {
+function ServerError(env: MiddlewareEnv, url: URL, err: any) {
   url.pathname = '/_internal/500'
   return env.ASSETS.fetch(url)
 }
@@ -96,21 +95,10 @@ function getCookie(request: Request, key: string): string | null {
   if (!header) return null
 
   const matchingCookies = header.split(";").map(x => x.trim().split("=")).filter(x => x[0].trim() == key)
-  if (!matchingCookies) return null
+  console.log(matchingCookies)
+  if (matchingCookies.length === 0) return null
 
   return matchingCookies[0][1].trim()
-}
-
-function setCookie(response: Response, key: string, value: string, maxAge: number) {
-  const newCookie = `${key}=${value}; path=/; Max-Age=${maxAge}; Secure; HttpOnly; SameSite=true`
-
-  const header = response.headers.get("Set-Cookie")
-  if (!header) {
-    response.headers.append("Set-Cookie", newCookie)
-  } else {
-    response.headers.set("Set-Cookie", [header, newCookie].join("; "))
-  }
-
 }
 
 async function hash(text: string) {
