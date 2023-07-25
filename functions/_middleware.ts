@@ -33,6 +33,8 @@ export const onRequest: PagesFunction<Env> = async ({ request, next, env }) => {
     const config = appConfig.sites.filter(x => x.slug == siteSlug).at(0)
     const cookiePassword = decodeURI(getCookie(request, siteSlug) ?? "")
 
+    if (siteSlug == "hash-password") return HashPassword(env, url);
+
     if (config == null) return NotFound(env, url)
     
     if (isEarly(config)) return Early(env, url)
@@ -92,6 +94,11 @@ async function ServerError(env: MiddlewareEnv, url: URL, err: any) {
   url.pathname = '/_internal/500'
   const assetResponse = await env.ASSETS.fetch(url)
   return new Response(assetResponse.body, { status: 500, headers: { error: err }})
+}
+
+function HashPassword(env: MiddlewareEnv, url: URL) {
+  url.pathname = '/_internal/hash-password'
+  return env.ASSETS.fetch(url)
 }
 
 function getCookie(request: Request, key: string): string | null {
