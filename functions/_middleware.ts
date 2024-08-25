@@ -6,12 +6,12 @@ const appConfig = require('./app-config.json') as AppConfig
 const oneDayInSeconds = 60 * 60 * 24
 const passwordKey = "password"
 
-type AppConfig = {
+export type AppConfig = {
   sites: SiteConfig[]
   allowedCountries?: string[]
 }
 
-type SiteConfig = {
+export type SiteConfig = {
   slug: string,
   passwordHash: string,
   live?: boolean,
